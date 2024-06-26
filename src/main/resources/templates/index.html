@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Produtos</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: #425a52;
+            color: #fff;
+        }
+
+        .titulo {
+            margin: 20px 0;
+        }
+
+        .filters-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 20px;
+            background: #fff;
+            color: #000;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .filter {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter label {
+            margin: 5px 0;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .card {
+            display: grid;
+            border-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+            width: 200px; /* Largura fixa para os cards */
+            padding: 20px;
+            color: #000;
+        }
+
+        .card img {
+            width: 100%; /* Imagem ocupa toda a largura do card */
+            height: auto; /* Altura ajustada automaticamente */
+            object-fit: cover; /* Ajusta a imagem dentro do espaço da maneira mais eficiente possível */
+        }
+
+        .card p {
+            margin: 5px 0;
+        }
+
+        .card td {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="titulo"><h1>Lista de Produtos</h1></div>
+
+    <div class="filters-container">
+        <div class="filter">
+            <h3>Marcas</h3>
+            <label><input type="checkbox" name="marca" value="Nike" id='marcaNike'> Nike</label>
+            <label><input type="checkbox" name="marca" value="Puma" id='marcaPuma'> Puma</label>
+            <label><input type="checkbox" name="marca" value="Adidas" id='marcaAdidas'> Adidas</label>
+        </div>
+        <div class="filter">
+            <h3>Preços</h3>
+            <label><input type="radio" name="preco" value="0-50"> Até R$50</label>
+            <label><input type="radio" name="preco" value="50-100"> R$50 - R$100</label>
+            <label><input type="radio" name="preco" value="100-200"> R$100 - R$200</label>
+            <label><input type="radio" name="preco" value="200+"> Acima de R$200</label>
+        </div>
+        <button type="button" onclick="filtrar()">Filtrar</button>
+    </div>
+
+    <div class="card-container">
+        <div th:each="produto : ${produtos}" class="card">
+            <img th:src="@{https://cdn.shoppub.io/cdn-cgi/image/w=1000,h=1000,q=80,f=auto/spacetennis/media/uploads/produtos/foto/mifjsufh/1.jpg}" alt="Imagem do Produto">
+            <p><strong>Nome:</strong> <span th:text="${produto.name}">Produto A</span></p>
+            <p><strong>Marca:</strong> <span th:text="${produto.brand}">Marca</span></p>
+            <p><strong>Preço:</strong> <span th:text="${produto.price}">45</span></p>
+            <p><strong>Descrição:</strong> <span th:text="${produto.description}">Descrição do Produto A</span></p>
+            <p><strong>Estoque:</strong> <span th:text="${produto.stock}">10</span></p>
+        </div>
+    </div>
+
+    <script>
+ async function filtrar() {
+    try {
+        let url = '/api/products';
+        const precoSelecionado = document.querySelector('input[name="preco"]:checked');
+
+        let resultado = precoSelecionado.value;
+        getProdutosPorFaixaDePreco = resultado
+
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Erro ao obter os produtos');
+        }
+
+        const produtos = await response.json();
+        const cardContainer = document.querySelector('.card-container');
+        cardContainer.innerHTML = '';
+
+        fetch(url)
+        .then(response => response.json())
+        .then(produtosFiltrados => {
+            // Limpa os cards existentes
+            var cardContainer = document.querySelector('.card-container');
+            cardContainer.innerHTML = '';
+
+            // Atualiza a exibição dos produtos na página
+            produtosFiltrados.forEach(function(produto) {
+                var card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `
+                    <img src="https://cdn.shoppub.io/cdn-cgi/image/w=1000,h=1000,q=80,f=auto/spacetennis/media/uploads/produtos/foto/mifjsufh/1.jpg" alt="Imagem do Produto">
+                    <p><strong>Nome:</strong> ${produto.name}</p>
+                    <p><strong>Marca:</strong> ${produto.brand}</p>
+                    <p><strong>Preço:</strong> ${produto.price}</p>
+                    <p><strong>Descrição:</strong> ${produto.description}</p>
+                    <p><strong>Estoque:</strong> ${produto.stock}</p>
+                `;
+                cardContainer.appendChild(card);
+            });
+        })
+        .catch(error => console.error('Erro ao filtrar produtos:', error));
+        */
+}
+
+            
+
+           /* var marcasSelecionadas = [];
+            var precoSelecionado = document.querySelector('input[name="preco"]:checked');
+            var urlBase = "/produtos/api/products/";
+
+            // Verifica marcas selecionadas
+            if(document.getElementById("marcaNike").checked) {
+                marcasSelecionadas.push("nike");
+            }
+            if(document.getElementById("marcaPuma").checked) {
+                marcasSelecionadas.push("puma");
+            }
+            if(document.getElementById("marcaAdidas").checked) {
+                marcasSelecionadas.push("adidas");
+            }
+
+            // Constrói a URL com base nos filtros selecionados
+            if(marcasSelecionadas.length > 0) {
+                urlBase += marcasSelecionadas.join("-");
+            }
+
+
+            // Exemplo de como seria a requisição fetch
+            fetch(urlBase)
+            .then(response => response.json())
+            .then(produtosFiltrados => {
+                // Limpa os cards existentes
+                var cardContainer = document.querySelector('.card-container');
+                cardContainer.innerHTML = '';
+
+                // Atualiza a exibição dos produtos na página
+                produtosFiltrados.forEach(function(produto) {
+                    var card = document.createElement('div');
+                    card.classList.add('card');
+                    card.innerHTML = `
+                        <img src="https://cdn.shoppub.io/cdn-cgi/image/w=1000,h=1000,q=80,f=auto/spacetennis/media/uploads/produtos/foto/mifjsufh/1.jpg" alt="Imagem do Produto">
+                        <p><strong>Nome:</strong> ${produto.name}</p>
+                        <p><strong>Marca:</strong> ${produto.brand}</p>
+                        <p><strong>Preço:</strong> ${produto.price}</p>
+                        <p><strong>Descrição:</strong> ${produto.description}</p>
+                        <p><strong>Estoque:</strong> ${produto.stock}</p>
+                    `;
+                    cardContainer.appendChild(card);
+                });
+            })
+            .catch(error => console.error('Erro ao filtrar produtos:', error));
+            */
+        }
+    </script>
+</body>
+</html>
